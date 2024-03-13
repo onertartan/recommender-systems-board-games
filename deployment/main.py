@@ -7,8 +7,7 @@ from item_based_recommender import ItemBasedCF
 from helper import *
 
 st.set_page_config(page_title="Game Board Recommender", layout="wide")
-#st.markdown(get_png_as_page_bg('background.png'), unsafe_allow_html=True)
-st.image('top_image.jpg',  use_column_width=None, clamp=False, channels="RGB", output_format="auto")
+st.image('./images/top_image.jpg',  use_column_width=None, clamp=False, channels="RGB", output_format="auto")
 
 st_tabs, st_buttons, entered_ids = crete_ui(st)
 
@@ -32,12 +31,7 @@ if 'df_recommendations' not in st.session_state:
     st.session_state['target_ids'] = {}
 
 
-
-
-
 if __name__ == '__main__':
-
-
     for method_name in st_buttons:
         if st_buttons[method_name]:
             recommender = st.session_state['recommenders'][method_name]

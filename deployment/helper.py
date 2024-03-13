@@ -5,15 +5,15 @@ import pickle
 @st.cache_data
 def get_data():
     #  data cached and accessed through session_state
-    df_id2game = pd.read_csv("df_id2game.csv", index_col=0)  # index: game id column:game name
-    df_game2id = pd.read_csv("df_game2id.csv", index_col=0)  # index: game name column:game id
-    df_id2user = pd.read_csv("df_id2user.csv", index_col=0)  # index: user id column:user name
-    df_user2id = pd.read_csv("df_user2id.csv", index_col=0)  # index: username column:user id
+    df_id2game = pd.read_csv("./data/df_id2game.csv", index_col=0)  # index: game id column:game name
+    df_game2id = pd.read_csv("./data/df_game2id.csv", index_col=0)  # index: game name column:game id
+    df_id2user = pd.read_csv("./data/df_id2user.csv", index_col=0)  # index: user id column:user name
+    df_user2id = pd.read_csv("./data/df_user2id.csv", index_col=0)  # index: username column:user id
     # data for user-based and item-based collaborative filtering
-    df_ratings = pd.read_csv("df_ratings_10.csv", index_col=0, dtype={"gameId": "uint32", "rating": "int8"})
+    df_ratings = pd.read_csv("./data/df_ratings_10.csv", index_col=0, dtype={"gameId": "uint32", "rating": "int8"})
     df_ratings.index = df_ratings.index.astype("uint32")
     # data for content-based recommendation
-    with open('df_content_dict.pkl', 'rb') as file:
+    with open('./data/df_content_dict.pkl', 'rb') as file:
         df_content_dict = pickle.load(file)
 
     return df_ratings, df_content_dict, df_id2game, df_game2id, df_id2user, df_user2id
