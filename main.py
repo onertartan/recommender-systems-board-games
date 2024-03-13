@@ -43,13 +43,13 @@ if __name__ == '__main__':
             recommender = st.session_state['recommenders'][method_name]
             target_id = recommender.get_target_id(entered_ids[method_name])
             if entered_ids[method_name] != str(target_id):
-                st_cols[method_name].write("Generating random id.")
-            st_cols[method_name].write(f"Target id is {target_id} ")
+                st_tabs[method_name].write("Generating random id.")
+            st_tabs[method_name].write(f"Target id is {target_id} ")
             if method_name == "user":
-                recommender.bar = st_cols["user"].progress(0, text="Generating recommendations using more than 169000 users. This might take 1 min.")
+                recommender.bar = st_tabs["user"].progress(0, text="Generating recommendations using more than 169000 users. This might take 1 min.")
 
             st.session_state['df_recommendations'][method_name] = recommender.get_recommendations([target_id], num_recommendations=10 )
             #st_cols[method_name].write(method_name, "Name:", st.session_state['recommenders'][method_name].df_id2name["game"].loc[target_id].item())
 
         if not st.session_state['df_recommendations'][method_name].empty:
-            st_cols[method_name].dataframe(st.session_state['df_recommendations'][method_name])
+            st_tabs[method_name].dataframe(st.session_state['df_recommendations'][method_name])
