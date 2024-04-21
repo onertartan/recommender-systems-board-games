@@ -3,6 +3,3 @@ scikit-learn
 pandas
 numpy
 stqdm
-ABC
-pickle
-base64
