@@ -1,5 +1,5 @@
 streamlit
 scikit-learn
-pandas
+pandas<2.0.0
 numpy
 stqdm
