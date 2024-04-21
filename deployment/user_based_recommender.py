@@ -1,4 +1,3 @@
-from pandas import DataFrame
 from collaborative_filtering import CollaborativeFiltering
 import pandas as pd
 
