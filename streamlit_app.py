@@ -6,11 +6,7 @@ from user_based_recommender import UserBasedCF
 from item_based_recommender import ItemBasedCF
 from helper import *
 
-st.set_page_config(page_title="Game Board Recommender", layout="wide")
-st.image('images/top_image.jpg',  use_column_width=None, clamp=False, channels="RGB", output_format="auto")
-
 st_tabs, st_buttons, entered_ids = crete_ui(st)
-
 df_ratings, df_content_dict, df_id2game, df_game2id, df_id2user, df_user2id = get_data()
 
 if 'df_recommendations' not in st.session_state:

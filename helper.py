@@ -2,6 +2,7 @@ import base64
 import streamlit as st
 import pandas as pd
 import pickle
+
 @st.cache_data
 def get_data():
     #  data cached and accessed through session_state
@@ -15,8 +16,8 @@ def get_data():
     # data for content-based recommendation
     with open('./data/df_content_dict.pkl', 'rb') as file:
         df_content_dict = pickle.load(file)
-
     return df_ratings, df_content_dict, df_id2game, df_game2id, df_id2user, df_user2id
+
 
 @st.cache_data()
 def get_base64_of_bin_file(bin_file):
@@ -27,37 +28,29 @@ def get_base64_of_bin_file(bin_file):
 
 def get_png_as_page_bg(png_file):
     main_bg = get_base64_of_bin_file(png_file)
-    return f"""
-            <style>
+    return f""" <style>
             .stApp {{
                 background: url(data:image/png;base64,{main_bg});
                 background-size: cover
             }}
-            </style>
-            """
-
+            </style>"""
 
 def crete_ui(st):
+    st.set_page_config(page_title="Game Board Recommender", layout="wide")
+    st.image('images/top_image.jpg', use_column_width=None, clamp=False, channels="RGB", output_format="auto")
     st.markdown("<h1 style='text-align: center; '>BOARD GAME RECOMMENDER</h1>", unsafe_allow_html=True)
-
+    font_css = """  <style> button[data-baseweb="tab"] > div[data-testid="stMarkdownContainer"] > p {  font-size: 24px; } </style>  """
+    st.write(font_css, unsafe_allow_html=True)
+    st.markdown(""" <style>  button[data-baseweb="tab"]   {margin: 0; width: 100%;}</style>""", unsafe_allow_html=True)
     st_tabs, st_buttons, entered_ids = {}, {}, {}
     st_tabs["content"], st_tabs["user"], st_tabs["item"] = st.tabs(["Content-Based Recommender", "User-Based Collaborative Filtering", "Item-Based Collaborative Filtering"])
-    st_tabs["content"].markdown("""
-      <style>
-      .css-16idsys.e16nr0p34 {
-        background-color: green;
-      }
-      </style>
-    """, unsafe_allow_html=True)
-    #st_tabs["content"].markdown("<h2 style='text-align:center; color:red;'>Content-Based Recommendation</h2>",  unsafe_allow_html=True)
-    st_tabs["user"].markdown("<h2 style='text-align:center; color:green;'>User-Based <br> Collaborative Filtering</h2>",
-                             unsafe_allow_html=True)
-    st_tabs["item"].markdown("<h2 style='text-align:center; color:blue;'>Item-Based <br> Collaborative Filtering</h2>",
-                             unsafe_allow_html=True)
+
+    st_tabs["content"].markdown("""  <style> button[id="tabs-bui3-tab-0"] > div[data-testid="stMarkdownContainer"] > p {color: orange; } </style>  """, unsafe_allow_html=True)
+    st_tabs["user"].markdown("""  <style> button[id="tabs-bui3-tab-1"]> div[data-testid="stMarkdownContainer"] > p {color: green; } </style>  """, unsafe_allow_html=True)
+    st_tabs["item"].markdown("""  <style> button[id="tabs-bui3-tab-2"]> div[data-testid="stMarkdownContainer"] > p {color: blue; } </style>  """,    unsafe_allow_html=True)
 
     for col_name in st_tabs:
         st_buttons[col_name] = st_tabs[col_name].button("Get recommendations", key=col_name)
         message = "user name or user id" if col_name == "user" else "game name or game id"
-        entered_ids[col_name] = st_tabs[col_name].text_input(f"Enter  {message}  (Skip for random {message})",
-                                                             key="target_" + col_name)
+        entered_ids[col_name] = st_tabs[col_name].text_input(f"Enter  {message}  (Skip for random {message})", key="target_" + col_name)
     return st_tabs, st_buttons, entered_ids
