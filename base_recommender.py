@@ -11,7 +11,7 @@ class BaseRecommender(ABC):
         self.name = ""
 
     @abstractmethod
-    def get_recommendations(self, target_id, num_recommendations=10):
+    def get_recommendations(self, target_ids, num_recommendations=10):
         pass
 
     def get_target_id(self, entered_id):

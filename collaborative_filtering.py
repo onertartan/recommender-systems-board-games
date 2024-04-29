@@ -9,13 +9,14 @@ import numpy as np
 class CollaborativeFiltering(BaseRecommender, ABC):
     df_ratings = None
     df_ratings_top_users = None
-    def __init__(self, threshold_in_common):
+    def __init__(self, threshold_in_common, k_neighbors):
         """
         @param threshold_in_common: minimum number of games in common with other users for user-based cf
                                     minimum number of user in common with other games for item-based cf
         """
         super().__init__()
         self.threshold_in_common = threshold_in_common
+        self.k_neighbors = k_neighbors
         self.bar = None
 
     @staticmethod
@@ -29,7 +30,7 @@ class CollaborativeFiltering(BaseRecommender, ABC):
         CollaborativeFiltering.df_ratings_top_users = CollaborativeFiltering.df_ratings.loc[top_user_ids]
         CollaborativeFiltering.df_ratings_top_users.index.name = "user_id"
 
-    def create_pivot_table(self, df_ratings_for_similarity_calculation, target_id, slice_length):
+    def __create_pivot_table(self, df_ratings_for_similarity_calculation, target_id, slice_length):
         """
         @param df_ratings_top_users    : the most active n users (n is selected by user, default 10000)
         @param target_id               : target user id for user-based cf and target game for item-based cf
@@ -56,14 +57,15 @@ class CollaborativeFiltering(BaseRecommender, ABC):
             df_ratings_subset = pd.concat((df_ratings_subset, df_ratings_target), axis=0)
             yield df_ratings_subset.pivot_table(index=df_ratings_subset.index, columns=df_ratings_subset.columns[0], values="rating")  # column is game_id
 
-    def get_similarities(self, df_ratings_for_similarity_calculation,target_id, slice_length=2000, similarity_metric=None):
+    def get_similarities(self, df_ratings_for_similarity_calculation,target_id,  similarity_metric=None):
         df_similarities = pd.DataFrame()
+        slice_length = 2000
 
         if len(self.df_ratings.loc[target_id]) < self.threshold_in_common: # If the target user did not rate enough games we do not have to proceed any more.
             print("The number of games rated by the target user is less than threshold for number of games in common.")
         else:
             total_steps = 1 + len(df_ratings_for_similarity_calculation.index.unique()) // slice_length
-            pivot_generator = self.create_pivot_table(df_ratings_for_similarity_calculation, target_id, slice_length=slice_length)
+            pivot_generator = self.__create_pivot_table(df_ratings_for_similarity_calculation, target_id, slice_length=slice_length)
             for _ in stqdm(range(total_steps), st_container=self.bar): #pivot table including users who have at least threshold games in common with the target user
                 df_pivot_filtered_slice = next(pivot_generator)
                 df_pivot_target = df_pivot_filtered_slice.loc[target_id]               #row of the pivot table related to the target user

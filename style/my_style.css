@@ -1,0 +1,15 @@
+h1 {
+  text-align:  center;
+}
+button[data-baseweb="tab"] {
+  margin: 0; width: 100%;font-size: 24px;
+}
+button[data-baseweb="tab"] > div[data-testid="stMarkdownContainer"] > p {  font-size: 24px; }
+
+button[id="tabs-bui3-tab-0"] > div[data-testid="stMarkdownContainer"] > p {color: orange; }
+button[id="tabs-bui3-tab-1"]> div[data-testid="stMarkdownContainer"] > p {color: green; }
+ button[id="tabs-bui3-tab-2"]> div[data-testid="stMarkdownContainer"] > p {color: blue; }
+
+.stTable tr {
+    height: 100px;
+}

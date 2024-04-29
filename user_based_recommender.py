@@ -3,21 +3,22 @@ import pandas as pd
 
 
 class UserBasedCF(CollaborativeFiltering):
-    def __init__(self, threshold_in_common):
-        super().__init__(threshold_in_common)
+    def __init__(self, threshold_in_common,k_neighbors):
+        super().__init__(threshold_in_common,k_neighbors)
         self.name = "user"
         self.ids = CollaborativeFiltering.df_ratings.index.unique().tolist()
 
-    def get_recommendations(self,  target_ids, num_recommendations=10, k = 3):
+
+    def get_recommendations(self, target_ids, num_recommendations=10):
         target_user_id = target_ids[0]
         if CollaborativeFiltering.df_ratings.index.name == "game_id":
             CollaborativeFiltering.set_index("user_id")
         # ratings given by the target user
         df_target_user = self.df_ratings.loc[target_user_id]
         # similarities between the target user and the other users(for only games in common with the target user)
-        df_similarities = self.get_similarities(self.df_ratings_top_users, target_user_id,  slice_length=2000, similarity_metric=None)
+        df_similarities = self.get_similarities(self.df_ratings_top_users, target_user_id, similarity_metric=None)
         # K-most similar user ids(K-nearest neighbors)
-        similar_user_ids = df_similarities.index[:k]
+        similar_user_ids = df_similarities.index[:self.k_neighbors]
         # Get ratings  of top k similar users
         df_top_k_similar_users = self.df_ratings_top_users.loc[similar_user_ids]
         # Exclude ratings of the games played by the target user

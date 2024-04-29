@@ -47,7 +47,6 @@ class ContentBasedRecommender(BaseRecommender):
         for key in ["category", "mechanic", "family"]:
             df_similarities[["similarity"]] += self.factors[key]*self.get_similarities(self.df_content_dict[key], target_game_id)
         df_similarities = df_similarities.sort_values(by=["similarity", "Board_Game_Rank"], ascending=[False,True])
-        recommended_game_ids = df_similarities.iloc[:num_recommendations].index
-        df_recommendations = pd.concat((self.df_id2name["content"].loc[recommended_game_ids], df_similarities.iloc[:num_recommendations]), axis=1)
-        df_recommendations.index.name = "game_id"
+        df_recommendations = df_similarities.iloc[1:num_recommendations+1].join(self.df_id2name["content"] )
+        df_recommendations = df_recommendations[df_recommendations.columns[::-1]] #re-order columns as game_name, similarity,rank
         return df_recommendations
