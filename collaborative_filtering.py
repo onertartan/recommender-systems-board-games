@@ -32,21 +32,21 @@ class CollaborativeFiltering(BaseRecommender, ABC):
 
     def __create_pivot_table(self, df_ratings_for_similarity_calculation, target_id, slice_length):
         """
-        @param df_ratings_top_users    : the most active n users (n is selected by user, default 10000)
+        @param df_ratings_for_similarity_calculation :ratings of the most active n users (n is selected by user, default 10000)
         @param target_id               : target user id for user-based cf and target game for item-based cf
         @param slice_length            : batch size for generator
                                        : pivot table for batch(index:user id column:game id for user-based cf)
                                                               (index:game id column:user id for item-based cf)
         """
-        ids_rows = df_ratings_for_similarity_calculation.index.unique().tolist()
-        df_ratings_target = CollaborativeFiltering.df_ratings.loc[target_id]
-        ids_cols = df_ratings_target.iloc[:, 0]  # df_ratings_target["game_id"] # game_ids_played_by_target_user
+        ids_rows = df_ratings_for_similarity_calculation.index.unique().tolist() # user OR game ids based on the selected cf method
+        df_ratings_target = CollaborativeFiltering.df_ratings.loc[target_id]     # ratings of the target user OR ratings given for the target game
+        ids_cols = df_ratings_target.iloc[:, 0]  # user-ids for item_based_cf OR game_ids for user-based cf
 
-        for i in range(0,1+ len(ids_rows)//slice_length):
+        for i in range(0, 1 + len(ids_rows)//slice_length):
             ids_rows_subset = set(ids_rows[i*slice_length:(i +1)* slice_length]) # select a batch of users
             print("target_id",target_id,"ids_rows",ids_rows_subset)
             ids_rows_subset.discard(target_id)  # exclude the target user if it is in the user-batch
-            # only users in the user batch(slice)
+            # only users in the user batch(slice) OR
             df_ratings_subset = df_ratings_for_similarity_calculation[df_ratings_for_similarity_calculation.index.isin(ids_rows_subset)]
             # filter ratings: select the ratings of the games played by the target user
             # item-based  cf: select the ratings of the games played by the users who played the target game
@@ -57,7 +57,7 @@ class CollaborativeFiltering(BaseRecommender, ABC):
             df_ratings_subset = pd.concat((df_ratings_subset, df_ratings_target), axis=0)
             yield df_ratings_subset.pivot_table(index=df_ratings_subset.index, columns=df_ratings_subset.columns[0], values="rating")  # column is game_id
 
-    def get_similarities(self, df_ratings_for_similarity_calculation,target_id,  similarity_metric=None):
+    def get_similarities(self, df_ratings_for_similarity_calculation, target_id,  similarity_metric=None):
         df_similarities = pd.DataFrame()
         slice_length = 2000
 

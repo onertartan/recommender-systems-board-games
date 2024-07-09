@@ -48,15 +48,15 @@ def create_ui(st):
     st_tabs["content"], st_tabs["user"], st_tabs["item"] = st.tabs(["Content-Based Recommender", "User-Based Collaborative Filtering", "Item-Based Collaborative Filtering"])
     st_tab_cols={"content": st_tabs["content"].columns(3), "user": st_tabs["user"].columns(3), "item": st_tabs["item"].columns(3)}
 
-    st_sliders["content"] = {"category_factor": st_tab_cols["content"][0].slider("Category factor", min_value=.1, max_value=1., value=.7, step=.1),
-                              "mechanic_factor": st_tab_cols["content"][0].slider("Mechanic factor", min_value=.1, max_value=1., value=.2, step=.1),
-                              "family_factor": st_tab_cols["content"][0].slider("Category family factor", min_value=.1, max_value=1., value=.1, step=.1)
+    st_sliders["content"] = {"category_factor": st_tab_cols["content"][0].slider("Category factor", min_value=.0, max_value=1., value=.7, step=.1),
+                              "mechanic_factor": st_tab_cols["content"][0].slider("Mechanic factor", min_value=.0, max_value=1., value=.2, step=.1),
+                              "family_factor": st_tab_cols["content"][0].slider("Category family factor", min_value=.0, max_value=1., value=.1, step=.1)
                              }
 
-    st_sliders["user"] = {"threshold_in_common":st_tab_cols["user"][1].slider("Number of users in common", min_value=1, max_value=20, value=10),
-                          "k_neighbors":st_tab_cols["user"][1].slider("K neighbors", min_value=1, max_value=20, value=3)}
-    st_sliders["item"] = {"threshold_in_common":st_tab_cols["item"][2].slider("Number of games in common", min_value=1, max_value=20, value=10),
-                          "k_neighbors":st_tab_cols["item"][2].slider("K neighbors", min_value=1, max_value=20, value=10)}
+    st_sliders["user"] = {"threshold_in_common": st_tab_cols["user"][1].slider("Number of users in common", min_value=1, max_value=20, value=10),
+                          "k_neighbors": st_tab_cols["user"][1].slider("K neighbors", min_value=1, max_value=20, value=3)}
+    st_sliders["item"] = {"threshold_in_common": st_tab_cols["item"][2].slider("Number of games in common", min_value=1, max_value=20, value=10),
+                          "k_neighbors": st_tab_cols["item"][2].slider("K neighbors", min_value=1, max_value=20, value=10)}
 
     for tab_name in st_tabs:
         st_buttons[tab_name] = st_tabs[tab_name].button("Get recommendations", key=tab_name)
